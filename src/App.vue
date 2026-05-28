@@ -2,18 +2,15 @@
 import { ref, computed } from "vue";
 import { invoke } from "@tauri-apps/api/core";
 
-const greetMsg = ref("");
-const name = ref("");
-
 // async function greet() {
 //  await invoke("greet", { name: name.value });
 // }
+const sec = 70;
 
-const timer = ref(300);
+const timer = ref(sec);
 const running = ref(false);
 
 async function startTimer() {
-console.log("dd:w")
   running.value = true;
   setInterval(() => {
      if(timer.value>0) {
@@ -23,27 +20,48 @@ console.log("dd:w")
 }
 
 const formattedTime = computed(() => { 
-const minutes =  Math.floor(timer.value / 60);
-const seconds =  timer.value % 60;
-return `${minutes}:${seconds}`
+let minutes =  Math.floor(timer.value / 60);
+let  seconds =  timer.value % 60;
+if(minutes.length === 1) minutes=`0${minutes}`;
+if(seconds === 0) seconds = seconds+'0';
+return `${minutes}:${seconds}`.replace('0:', '')
+})
+
+const progress=computed(()=>{
+  const elapsed = sec - timer.value;
+  return Math.floor(elapsed/sec * 100)
 })
 
 </script>
 
 <template>
-  <main class="bg-linear-to-l from-[#20002c] to-[#cbb4d4] h-screen w-screen text-sm tracking-wide">
-    <div v-if="running" class="flex items-center justify-center gap-3 w-full h-full">
+  <main class="-[#848884] h-screen w-screen text-sm tracking-wide">
+   <div data-tauri-drag-region class="fixed top-0 left-0 w-full h-10 p-2 flex items-center gap-3">
+     <button class="bg-red-500 rounded cursor-pointer h-5 w-5 flex flex-col items-center justify-center">
+<svg width="16px" height="16px" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#fff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M720.7 354.8L669 303.1l-157 157-157-157-51.7 51.7 157 157-157 157 51.7 51.7 157-157 157 157 51.7-51.7-157-157z" fill="#fff"></path></g></svg>
+     </button>
+     <button class="bg-gray-500 rounded cursor-pointer h-5 w-5 flex flex-col items-center justify-center">
+    <svg width="16px" height="16px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M6 12L18 12" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+     </button>
+     <button class="bg-gray-500 rounded cursor-pointer h-5 w-5 flex flex-col items-center justify-center">
+    <svg width="16px" height="16px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g id="Arrow / Expand"> <path id="Vector" d="M10 19H5V14M14 5H19V10" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g> </g></svg>
+     </button>
+
+   </div>
+  
+    <div v-if="running" class="flex flex-col items-center justify-center gap-5 w-full h-full">
        <p class="text-4xl font-bold tracking-widest">{{ formattedTime }} </p>
+       <div class="w-32 h-1 bg-gray-200">
+         <div :style="{ width: progress + '%' }" class="w-10 h-full bg-green-300"></div>
+       </div>
     </div>
   
     <div v-else class="flex flex-col items-center justify-center gap-3 w-full h-full">
-    <svg width="50px" height="50px" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--twemoji" preserveAspectRatio="xMidYMid meet" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path fill="#AAB8C2" d="M18 0C8.611 0 1 7.611 1 17h.029v17c0 1.1.9 2 2 2H33c1.1 0 2-.9 2-2V17c0-9.389-7.611-17-17-17z"></path><circle fill="#FFF" cx="18" cy="17" r="14"></circle><path fill="#66757F" d="M18 4c7.18 0 13 5.82 13 13s-5.82 13-13 13S5 24.18 5 17S10.82 4 18 4m0-2C9.729 2 3 8.729 3 17s6.729 15 15 15s15-6.729 15-15S26.271 2 18 2z"></path><path fill="#292F33" d="M19 6a1 1 0 0 0-2 0v1a1 1 0 0 0 2 0V6zm0 21a1 1 0 0 0-2 0v1a1 1 0 0 0 2 0v-1zM8 16H7a1 1 0 0 0 0 2h1a1 1 0 0 0 0-2zm21 0h-1a1 1 0 0 0 0 2h1a1 1 0 0 0 0-2zm-2.293 8.293L26 23.586A.999.999 0 1 0 24.586 25l.707.707a.999.999 0 1 0 1.414-1.414zM10 23.586l-.707.707a.999.999 0 1 0 1.414 1.414l.707-.707A.999.999 0 1 0 10 23.586zM9.293 9.707l.707.707A.999.999 0 1 0 11.414 9l-.707-.707a.999.999 0 1 0-1.414 1.414zM26 10.414l.707-.707a.999.999 0 1 0-1.414-1.414L24.586 9A.999.999 0 1 0 26 10.414z"></path><path fill="#DD2E44" d="M8.915 13.839a1 1 0 0 1 1.325-1.288l8.154 3.51a1 1 0 0 1-.791 1.837l-8.154-3.51a1 1 0 0 1-.534-.549z"></path></g></svg>
 
-    <h1 class="font-bold italic">rwn</h1>
-
-    <p>Minimalistic local only timer and blocker app.</p>
-
-    <button class="-------px-5 py-1 tracking-wide cursor-pointer" @click="startTimer">Start timer</button>
+    <button class="cursor-pointer flex items-center gap-3 text-xl font-bold" @click="startTimer">
+      <svg height="40px" width="40px" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" xmlns:xlink="http://www.w3.org/1999/xlink" enable-background="new 0 0 512 512" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <g fill="#231F20"> <path d="m354.2,247.4l-135.1-92.4c-4.2-3.1-15.4-3.1-16.3,8.6v184.8c1,11.7 12.4,11.9 16.3,8.6l135.1-92.4c3.5-2.1 8.3-10.7 0-17.2zm-130.5,81.3v-145.4l106.1,72.7-106.1,72.7z"></path> <path d="M256,11C120.9,11,11,120.9,11,256s109.9,245,245,245s245-109.9,245-245S391.1,11,256,11z M256,480.1 C132.4,480.1,31.9,379.6,31.9,256S132.4,31.9,256,31.9S480.1,132.4,480.1,256S379.6,480.1,256,480.1z"></path> </g> </g> </g></svg>
+      <span> 25.00 </span>
+    </button>
    </div>
   </main>
 </template>
