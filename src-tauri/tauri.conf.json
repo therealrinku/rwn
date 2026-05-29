@@ -14,9 +14,7 @@
       {
         "title": "rwn",
         "width": 800,
-        "height": 600,
-        "decorations": false,
-        "acceptFirstMouse": true
+        "height": 600
       }
     ],
     "security": {

@@ -2,9 +2,8 @@
 import { ref, computed } from "vue";
 import { invoke } from "@tauri-apps/api/core";
 
-// async function greet() {
 //  await invoke("greet", { name: name.value });
-// }
+
 const sec = 70;
 
 const timer = ref(sec);
@@ -36,96 +35,6 @@ const progress = computed(() => {
 
 <template>
   <main class="h-screen w-screen text-sm tracking-wide">
-    <div
-      v-if="!running"
-      data-tauri-drag-region
-      class="fixed top-0 left-0 w-full h-10 p-2 flex items-center gap-3"
-    >
-      <button
-        class="bg-red-500 rounded-full cursor-pointer h-5 w-5 flex flex-col items-center justify-center"
-      >
-        <svg
-          width="16px"
-          height="16px"
-          viewBox="0 0 1024 1024"
-          class="icon"
-          version="1.1"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="#fff"
-        >
-          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-          <g
-            id="SVGRepo_tracerCarrier"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          ></g>
-          <g id="SVGRepo_iconCarrier">
-            <path
-              d="M720.7 354.8L669 303.1l-157 157-157-157-51.7 51.7 157 157-157 157 51.7 51.7 157-157 157 157 51.7-51.7-157-157z"
-              fill="#fff"
-            ></path>
-          </g>
-        </svg>
-      </button>
-      <button
-        class="bg-gray-500 rounded-full cursor-pointer h-5 w-5 flex flex-col items-center justify-center"
-      >
-        <svg
-          width="16px"
-          height="16px"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-          <g
-            id="SVGRepo_tracerCarrier"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          ></g>
-          <g id="SVGRepo_iconCarrier">
-            <path
-              d="M6 12L18 12"
-              stroke="#fff"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            ></path>
-          </g>
-        </svg>
-      </button>
-      <button
-        class="bg-gray-500 rounded-full cursor-pointer h-5 w-5 flex flex-col items-center justify-center"
-      >
-        <svg
-          width="16px"
-          height="16px"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-          <g
-            id="SVGRepo_tracerCarrier"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          ></g>
-          <g id="SVGRepo_iconCarrier">
-            <g id="Arrow / Expand">
-              <path
-                id="Vector"
-                d="M10 19H5V14M14 5H19V10"
-                stroke="#fff"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              ></path>
-            </g>
-          </g>
-        </svg>
-      </button>
-    </div>
-
     <div
       v-if="running"
       class="flex flex-col items-center justify-center gap-5 w-full h-full"
