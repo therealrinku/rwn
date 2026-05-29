@@ -44,7 +44,7 @@ const progress = computed(() => {
 </script>
 
 <template>
-  <main class="h-screen w-screen text-sm tracking-wide">
+  <main class="bg-[#af4949] text-white h-screen w-screen text-sm tracking-wide">
     <div
       class="flex flex-col items-center justify-center gap-5 w-full h-full font-mono font-bold"
     >
@@ -56,13 +56,10 @@ const progress = computed(() => {
       </button>
     </div>
 
-    <div
-      v-if="time !== sec"
-      class="fixed bottom-0 left-0 w-full h-2 bg-gray-200"
-    >
+    <div v-if="time !== sec" class="fixed bottom-0 left-0 w-full h-2">
       <div
         :style="{ width: progress + '%' }"
-        class="w-10 h-full bg-green-400"
+        class="w-10 h-full bg-green-500"
       ></div>
     </div>
   </main>
