@@ -56,7 +56,7 @@ const progress = computed(() => {
       </button>
     </div>
 
-    <div v-if="time !== sec" class="fixed bottom-0 left-0 w-full h-2">
+    <div v-if="time !== sec" class="fixed bottom-1 left-2 w-full h-1">
       <div
         :style="{ width: progress + '%' }"
         class="w-10 h-full bg-green-500"
