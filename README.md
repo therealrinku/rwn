@@ -1,7 +1,27 @@
-# Tauri + Vue + TypeScript
+<div align="center">
+    <h3><b><i>rwn</i></b></h3>
+    <p>minimalistic local only timer and blocker app designed for minimalists</p>
+</div>
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+## Features
 
-## Recommended IDE Setup
+🔥 Local only, all your data stored locally on your device
 
-- [VS Code](https://code.visualstudio.com/) + [Vue - Official](https://marketplace.visualstudio.com/items?itemName=Vue.volar) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+🔥 Powerful blocking feature - coming soon
+
+✨ Minimal design that reduces your cognitive load not add on it
+
+✨ Beautiful UI with customizations to make it look and feel like you want
+
+
+## Headshots
+
+<img width="1089" height="698" alt="Screenshot 2026-05-29 at 13 51 41" src="https://github.com/user-attachments/assets/ccfc8c06-c76f-4763-a781-d3b0509baf8a" />
+
+
+## Technologies Used
+<img src="https://img.shields.io/badge/tauri-000000?style=for-the-badge&logo=tauri&logoColor=blue"/>
+<img src="https://img.shields.io/badge/rust-000000?style=for-the-badge&logo=rust&logoColor=white"/>
+<img src="https://img.shields.io/badge/vue-000000?style=for-the-badge&logo=vue.js&logoColor=white"/>
+<img src="https://img.shields.io/badge/typescript-000000?style=for-the-badge&logo=typescript&logoColor=blue"/>
+<img src="https://img.shields.io/badge/tailwindcss-000000?style=for-the-badge&logo=tailwindcss&logoColor=blue"/>
