@@ -20,11 +20,12 @@ async function startTimer() {
 }
 
 const formattedTime = computed(() => {
-  let minutes = Math.floor(timer.value / 60);
-  let seconds = timer.value % 60;
-  if (minutes.length === 1) minutes = `0${minutes}`;
-  if (seconds === 0) seconds = seconds + "0";
-  return `${minutes}:${seconds}`.replace("0:", "");
+  const mins = Math.floor(timer.value / 60);
+  const secs = timer.value % 60;
+
+  const formattedMins = String(mins).padStart(2, "0");
+  const formattedSecs = String(secs).padStart(2, "0");
+  return `${formattedMins}.${formattedSecs}`;
 });
 
 const progress = computed(() => {
@@ -34,7 +35,7 @@ const progress = computed(() => {
 </script>
 
 <template>
-  <main class="-[#848884] h-screen w-screen text-sm tracking-wide">
+  <main class="h-screen w-screen text-sm tracking-wide">
     <div
       v-if="!running"
       data-tauri-drag-region
@@ -129,11 +130,13 @@ const progress = computed(() => {
       v-if="running"
       class="flex flex-col items-center justify-center gap-5 w-full h-full"
     >
-      <p class="text-4xl font-bold tracking-widest">{{ formattedTime }}</p>
-      <div class="w-32 h-1 bg-gray-200">
+      <p class="text-4xl font-bold tracking-widest font-mono">
+        {{ formattedTime }}
+      </p>
+      <div class="fixed bottom-0 left-0 w-full h-1 bg-gray-300">
         <div
           :style="{ width: progress + '%' }"
-          class="w-10 h-full bg-green-300"
+          class="w-10 h-full bg-green-400"
         ></div>
       </div>
     </div>
@@ -147,8 +150,8 @@ const progress = computed(() => {
         @click="startTimer"
       >
         <svg
-          height="40px"
-          width="40px"
+          height="38px"
+          width="38px"
           version="1.1"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 512 512"
@@ -175,7 +178,7 @@ const progress = computed(() => {
             </g>
           </g>
         </svg>
-        <span> 25.00 </span>
+        <span class="text-4xl font-mono">25.00 </span>
       </button>
     </div>
   </main>
