@@ -16,7 +16,8 @@
 
 ## Headshots
 
-<img width="1089" height="698" alt="Screenshot 2026-05-29 at 13 51 41" src="https://github.com/user-attachments/assets/ccfc8c06-c76f-4763-a781-d3b0509baf8a" />
+<img width="1089" height="698" alt="Screenshot 2026-05-29 at 14 37 57" src="https://github.com/user-attachments/assets/e1039f40-3c41-4b94-8598-bf2e4826d5ba" />
+
 
 
 ## Technologies Used
