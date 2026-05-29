@@ -4,7 +4,7 @@ import { invoke } from "@tauri-apps/api/core";
 
 //  await invoke("greet", { name: name.value });
 
-const sec = 70;
+const sec = 100;
 
 const timer = ref(sec);
 const running = ref(false);
@@ -42,7 +42,7 @@ const progress = computed(() => {
       <p class="text-4xl font-bold tracking-widest font-mono">
         {{ formattedTime }}
       </p>
-      <div class="fixed bottom-0 left-0 w-full h-1 bg-gray-300">
+      <div class="fixed bottom-0 left-0 w-full h-2 bg-gray-200">
         <div
           :style="{ width: progress + '%' }"
           class="w-10 h-full bg-green-400"
@@ -87,7 +87,7 @@ const progress = computed(() => {
             </g>
           </g>
         </svg>
-        <span class="text-4xl font-mono">25.00 </span>
+        <span class="text-4xl font-mono">{{ formattedTime }}</span>
       </button>
     </div>
   </main>
