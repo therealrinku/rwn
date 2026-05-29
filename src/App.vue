@@ -48,19 +48,19 @@ const progress = computed(() => {
     <div
       class="flex flex-col items-center justify-center gap-5 w-full h-full font-mono font-bold"
     >
-      <span class="text-4xl">{{ formattedTime }}</span>
+      <span class="text-5xl">{{ formattedTime }}</span>
 
       <button class="cursor-pointer" @click="toggleTimer">
         <play-icon v-if="!running" />
         <pause-icon v-else />
       </button>
-    </div>
 
-    <div v-if="time !== sec" class="fixed bottom-1 left-2 w-full h-1">
-      <div
-        :style="{ width: progress + '%' }"
-        class="w-10 h-full bg-green-500"
-      ></div>
+      <div v-if="time !== sec" class="fixed bottom-12 w-48 h-1 bg-gray-300">
+        <div
+          :style="{ width: progress + '%' }"
+          class="w-10 h-full bg-white"
+        ></div>
+      </div>
     </div>
   </main>
 </template>
