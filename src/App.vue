@@ -55,5 +55,15 @@ const progress = computed(() => {
         <pause-icon v-else />
       </button>
     </div>
+
+    <div
+      v-if="time !== sec"
+      class="fixed bottom-0 left-0 w-full h-2 bg-gray-200"
+    >
+      <div
+        :style="{ width: progress + '%' }"
+        class="w-10 h-full bg-green-400"
+      ></div>
+    </div>
   </main>
 </template>
