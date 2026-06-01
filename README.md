@@ -1,13 +1,13 @@
 <div align="center">
     <h3><b><i>rwn</i></b></h3>
-    <p>minimalistic local only timer and blocker app designed for minimalists</p>
+    <p>minimalistic local only timer and prioritized dedicated tasks list</p>
 </div>
 
 ## Features
 
 🔥 Local only, all your data stored locally on your device
 
-🔥 Powerful blocking feature - coming soon
+🔥 Add only 5 tasks that matters not dump everything and work on it using timer
 
 ✨ Minimal design that reduces your cognitive load not add on it
 
