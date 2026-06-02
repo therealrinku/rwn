@@ -3,7 +3,7 @@ import { ref, computed, onMounted, onUnmounted } from "vue";
 import { invoke } from "@tauri-apps/api/core";
 import PlayIcon from "./components/icons/play-icon.vue";
 import PauseIcon from "./components/icons/pause-icon.vue";
-import { listen } from '@tauri-apps/api/event';
+import { listen } from "@tauri-apps/api/event";
 
 const sec = 1200;
 
@@ -16,12 +16,12 @@ let unlistenTick;
 let unlistenFinished;
 
 onMounted(async () => {
-  unlistenTick = await listen('timer-tick', (event) => {
+  unlistenTick = await listen("timer-tick", (event) => {
     time.value = event.payload;
     running.value = true;
   });
 
-  unlistenFinished = await listen('timer-finished', () => {
+  unlistenFinished = await listen("timer-finished", () => {
     running.value = false;
   });
 });
@@ -33,21 +33,21 @@ onUnmounted(() => {
 
 async function toggleTimer() {
   if (running.value && !isPaused.value) {
-    await invoke('toggle_pause');
+    await invoke("toggle_pause");
     isPaused.value = true;
     return;
   }
 
   if (running.value && isPaused.value) {
-    await invoke('toggle_pause');
+    await invoke("toggle_pause");
     isPaused.value = false;
     return;
   }
 
-  await invoke('start_timer', { 
-    initialSeconds: sec, 
-    task: 'Working on rwn',
-    urlToBlock: 'x.com'
+  await invoke("start_timer", {
+    initialSeconds: sec,
+    task: "Working on rwn",
+    urlToBlock: "x.com",
   });
 
   running.value = true;
@@ -72,38 +72,70 @@ const showPauseIcon = computed(() => running.value && !isPaused.value);
 </script>
 
 <template>
-  <main class="bg-linear-to-r from-[#af4949] to-red-200 text-white h-screen w-screen text-sm tracking-wider flex flex-col items-center justify-center">
+  <main
+    class="bg-linear-to-r from-[#af4949] to-[#F88379] text-white h-screen w-screen text-sm tracking-wide flex flex-col items-center justify-center"
+  >
+    <div class="flex items-center gap-3">
+      <p class="font-bold text-sm">3/5</p>
+      ·
+      <p class="font-bold text-sm">28.50 min</p>
+      ·
+      <p class="font-bold text-sm">Add new ⌘ n</p>
+    </div>
 
-  <div class="flex items-center gap-3">
-    <p class="font-bold text-lg">3/5</p> -
-    <p class="font-bold text-lg">28.50 min</p>
-  </div>
+    <div class="w-full flex flex-col items-center justify-center">
+      <div
+        class="bg-[#af4949] mt-5 w-[75%] py-5 px-3 shadow rounded flex items-center justify-between"
+      >
+        <div class="flex items-center gap-3">
+          <input type="radio" class="scale-150" />
 
-  <div class="w-full flex flex-col items-center justify-center">
-     <div class="bg-[#af4949] mt-5 w-[50%] py-5 px-3 shadow rounded flex items-center justify-between">
-        <p>Finish the work</p>
-        <play-icon />
-     </div>
-     <div class="bg-[#af4949] mt-5 w-[50%] py-5 px-3 shadow rounded flex items-center justify-between">
-        <p>Complete the assignment</p>
-        <play-icon />
-     </div>
-     <div class="bg-[#af4949] mt-5 w-[50%] py-5 px-3 shadow rounded flex items-center justify-between">
-        <p>Complete the assignment</p>
-        <play-icon />
-     </div>
-     <div class="bg-[#af4949] mt-5 w-[50%] py-5 px-3 shadow rounded flex items-center justify-between">
-        <p>Complete the assignment</p>
-        <play-icon />
-     </div>
-     <div class="bg-[#af4949] mt-5 w-[50%] py-5 px-3 shadow rounded flex items-center justify-between">
-        <p>Complete the assignment</p>
-        <play-icon />
-     </div>
-   </div>
+          <play-icon />
+          <input
+            type="text"
+            class="outline-none"
+            autofocus
+            placeholder="Add new task here..."
+          />
+        </div>
+      </div>
+      <div
+        class="bg-[#af4949] mt-5 w-[75%] py-5 px-3 shadow rounded flex items-center justify-between"
+      >
+        <div class="flex items-center gap-3">
+          <input type="radio" class="scale-150" />
+
+          <play-icon />
+          <p>Finish the work</p>
+        </div>
+      </div>
+      <div
+        class="bg-[#af4949] mt-5 w-[75%] py-5 px-3 shadow rounded flex items-center justify-between"
+      >
+        <div class="flex items-center gap-3">
+          <input type="radio" class="scale-150" />
+
+          <play-icon />
+          <p>Finish the work</p>
+        </div>
+      </div>
+      <div
+        class="bg-[#af4949] mt-5 w-[75%] py-5 px-3 shadow rounded flex items-center justify-between"
+      >
+        <div class="flex items-center gap-3">
+          <input type="radio" class="scale-150" />
+
+          <play-icon />
+          <p>Finish the work</p>
+        </div>
+      </div>
+    </div>
   </main>
 
-  <main v-if="false" class="bg-[#af4949] text-white h-screen w-screen text-sm tracking-wide">
+  <main
+    v-if="false"
+    class="bg-[#af4949] text-white h-screen w-screen text-sm tracking-wide"
+  >
     <div
       class="flex flex-col items-center justify-center w-full h-full font-mono font-bold"
     >
@@ -118,7 +150,6 @@ const showPauseIcon = computed(() => running.value && !isPaused.value);
           <play-icon />
         </Transition>
       </button>
-
     </div>
   </main>
 </template>
