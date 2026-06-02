@@ -75,59 +75,66 @@ const showPauseIcon = computed(() => running.value && !isPaused.value);
   <main
     class="bg-linear-to-r from-[#af4949] to-[#F88379] text-white h-screen w-screen text-sm tracking-wide flex flex-col items-center justify-center"
   >
-    <div class="flex items-center gap-3">
-      <p class="font-bold text-sm">3/5</p>
-      ·
-      <p class="font-bold text-sm">28.50 min</p>
-      ·
-      <p class="font-bold text-sm">Add new ⌘ n</p>
+    <div class="mx-auto w-[75%] flex items-center gap-7">
+      <button class="font-bold">Tasks</button>
+      <button class="text-gray-200">Analytics</button>
     </div>
 
-    <div class="w-full flex flex-col items-center justify-center">
-      <div
-        class="bg-[#af4949] mt-5 w-[75%] py-5 px-3 shadow rounded flex items-center justify-between"
-      >
-        <div class="flex items-center gap-3">
-          <input type="radio" class="scale-150" />
+    <!-- <div class="flex items-center gap-3 mt-5"> -->
+    <!-- <p class="font-bold text-sm">tasks done 3/5</p> -->
+    <!-- · -->
+    <!-- <p class="font-bold text-sm">28.50 mins focused</p> -->
+    <!-- · -->
+    <!-- <p class="font-bold text-sm">Add new ⌘ n</p> -->
+    <!-- </div> -->
 
-          <play-icon />
-          <input
-            type="text"
-            class="outline-none"
-            autofocus
-            placeholder="Add new task here..."
-          />
-        </div>
+    <div
+      class="flex flex-col items-center justify-center bg-[#af4949] rounded w-[75%] mt-5"
+    >
+      <div class="w-full py-5 px-3 shadow-md flex items-center justify-between">
+        <input type="radio" class="scale-150" />
+
+        <play-icon />
+        <input
+          type="text"
+          class="outline-none w-[90%]"
+          autofocus
+          placeholder="Add new task here... Protip: add daily at the end for recurring tasks"
+        />
       </div>
-      <div
-        class="bg-[#af4949] mt-5 w-[75%] py-5 px-3 shadow rounded flex items-center justify-between"
-      >
-        <div class="flex items-center gap-3">
-          <input type="radio" class="scale-150" />
+      <div class="w-full py-5 px-3 shadow-md flex items-start justify-between">
+        <input type="radio" class="scale-150 mt-1" />
 
-          <play-icon />
-          <p>Finish the work</p>
-        </div>
+        <play-icon />
+        <p class="break-all w-[90%]">
+          Lorem Ipsum is simply dummy text of the printing and typesetting
+          industry.
+        </p>
       </div>
-      <div
-        class="bg-[#af4949] mt-5 w-[75%] py-5 px-3 shadow rounded flex items-center justify-between"
-      >
-        <div class="flex items-center gap-3">
-          <input type="radio" class="scale-150" />
+      <div class="w-full py-5 px-3 shadow-md flex items-start justify-between">
+        <input type="radio" class="scale-150 mt-1" />
 
-          <play-icon />
-          <p>Finish the work</p>
-        </div>
+        <play-icon />
+        <p class="break-all w-[90%]">
+          Lorem Ipsum is simply dummy text of the printing and typesetting
+          industry. Lorem Ipsum has been the industry's standard dummy text ever
+          since 1966, when designers at Letraset and James Mosley, the librarian
+          at St Bride Printing Library, took a 1914 Cicero translation and
+          scrambled it to make dummy text for Letraset's Body Type sheets. It
+          has survived not only many decades, but also the leap into electronic
+          typesetting, remaining essentially unchanged. It was popularised
+          thanks to these sheets and more recently with desktop publishing
+          software including versions of Lorem Ipsum.
+        </p>
       </div>
-      <div
-        class="bg-[#af4949] mt-5 w-[75%] py-5 px-3 shadow rounded flex items-center justify-between"
-      >
-        <div class="flex items-center gap-3">
-          <input type="radio" class="scale-150" />
+      <div class="w-full py-5 px-3 shadow-md flex items-start gap-3 opacity-70">
+        <input type="radio" checked class="scale-150 mt-1" />
 
-          <play-icon />
-          <p>Finish the work</p>
-        </div>
+        <play-icon />
+        <p class="break-all w-[90%]">
+          It is a long established fact that a reader will be distracted by the
+          readable content of a page when looking at its layout.
+        </p>
       </div>
     </div>
   </main>
