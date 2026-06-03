@@ -51,6 +51,9 @@ function checkUncheck(id) {
 }
 
 function addTodo() {
+  if (!todoTitle.value.trim()) {
+    return;
+  }
   const newTodo = {
     id: Math.floor(
       new Date().getTime() + Math.random() * 200 + Math.random() * 100,
@@ -130,9 +133,12 @@ const showPauseIcon = computed(() => running.value && !isPaused.value);
         class="w-full py-5 px-3 shadow flex items-start justify-between"
         @submit.prevent="addTodo"
       >
-        <input type="checkbox" class="scale-150 mt-1" />
+        <input type="checkbox" disabled class="scale-150 mt-1" />
 
-        <play-icon />
+        <button class="opacity-50">
+          <play-icon />
+        </button>
+
         <input
           v-model="todoTitle"
           type="text"
