@@ -11,6 +11,8 @@ const time = ref(sec);
 const running = ref(false);
 const isPaused = ref(false);
 const timer = ref(null);
+const todos = ref([]);
+const todoTitle = ref("");
 
 let unlistenTick;
 let unlistenFinished;
@@ -24,12 +26,29 @@ onMounted(async () => {
   unlistenFinished = await listen("timer-finished", () => {
     running.value = false;
   });
+
+  const saved = localStorage.getItem("todos");
+  todos.value = saved ? JSON.parse(saved) : [];
 });
 
 onUnmounted(() => {
   if (unlistenTick) unlistenTick();
   if (unlistenFinished) unlistenFinished();
 });
+
+function addTodo() {
+  const newTodo = {
+    id: Math.floor(
+      new Date().getTime() + Math.random() * 200 + Math.random() * 100,
+    ),
+    title: todoTitle.value,
+    worked_for_sec: 0,
+    date: new Date(),
+  };
+  todos.value = [...todos.value, newTodo];
+  localStorage.setItem("todos", JSON.stringify(todos.value));
+  todoTitle.value = "";
+}
 
 async function toggleTimer() {
   if (running.value && !isPaused.value) {
@@ -91,50 +110,38 @@ const showPauseIcon = computed(() => running.value && !isPaused.value);
     <div
       class="flex flex-col items-center justify-center bg-[#af4949] rounded w-[75%] mt-5"
     >
-      <div class="w-full py-5 px-3 shadow-md flex items-center justify-between">
+      <form
+        v-if="todos.length < 5"
+        class="w-full py-5 px-3 shadow flex items-center justify-between"
+        @submit.prevent="addTodo"
+      >
         <input type="radio" class="scale-150" />
 
         <play-icon />
         <input
+          v-model="todoTitle"
           type="text"
           class="outline-none w-[90%]"
           autofocus
-          placeholder="Add new task here... Protip: add daily at the end for recurring tasks"
+          placeholder="Add new task . . ."
         />
-      </div>
-      <div class="w-full py-5 px-3 shadow-md flex items-start justify-between">
+      </form>
+      <div
+        v-for="todo in todos"
+        class="w-full py-5 px-3 shadow flex items-start justify-between"
+      >
         <input type="radio" class="scale-150 mt-1" />
 
         <play-icon />
         <p class="break-all w-[90%]">
-          Lorem Ipsum is simply dummy text of the printing and typesetting
-          industry.
+          {{ todo.title }}
         </p>
       </div>
-      <div class="w-full py-5 px-3 shadow-md flex items-start justify-between">
-        <input type="radio" class="scale-150 mt-1" />
-
-        <play-icon />
-        <p class="break-all w-[90%]">
-          Lorem Ipsum is simply dummy text of the printing and typesetting
-          industry. Lorem Ipsum has been the industry's standard dummy text ever
-          since 1966, when designers at Letraset and James Mosley, the librarian
-          at St Bride Printing Library, took a 1914 Cicero translation and
-          scrambled it to make dummy text for Letraset's Body Type sheets. It
-          has survived not only many decades, but also the leap into electronic
-          typesetting, remaining essentially unchanged. It was popularised
-          thanks to these sheets and more recently with desktop publishing
-          software including versions of Lorem Ipsum.
-        </p>
-      </div>
-      <div class="w-full py-5 px-3 shadow-md flex items-start gap-3 opacity-70">
-        <input type="radio" checked class="scale-150 mt-1" />
-
-        <play-icon />
-        <p class="break-all w-[90%]">
-          It is a long established fact that a reader will be distracted by the
-          readable content of a page when looking at its layout.
-        </p>
+      <div
+        v-if="todos.length === 0"
+        class="w-full shadow flex flex-col items-center justify-center min-h-48"
+      >
+        <p>No tasks added.</p>
       </div>
     </div>
   </main>
