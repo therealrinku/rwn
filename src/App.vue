@@ -138,7 +138,6 @@ const showPauseIcon = computed(() => running.value && !isPaused.value);
       <div
         v-for="todo in todos"
         :key="todo.id"
-        :class="{ 'opacity-50': todo.done }"
         class="w-full py-5 px-3 shadow flex items-start justify-between"
       >
         <input
@@ -148,8 +147,13 @@ const showPauseIcon = computed(() => running.value && !isPaused.value);
           @change="checkUncheck(todo.id)"
         />
 
-        <play-icon />
-        <p class="break-all w-[90%]">
+        <button :class="{ 'opacity-50': todo.done }" :disabled="todo.done">
+          <play-icon />
+        </button>
+        <p
+          class="break-all w-[90%]"
+          :class="{ 'opacity-50 line-through': todo.done }"
+        >
           {{ todo.title }}
         </p>
       </div>
