@@ -36,6 +36,14 @@ onUnmounted(() => {
   if (unlistenFinished) unlistenFinished();
 });
 
+function checkUncheck(id) {
+  const todoIndex = todos.value.findIndex((tdo) => tdo.id === id);
+  const updated = [...todos.value];
+  updated[todoIndex].done = !Boolean(updated[todoIndex].done);
+  todos.value = updated;
+  localStorage.setItem("todos", JSON.stringify(todos.value));
+}
+
 function addTodo() {
   const newTodo = {
     id: Math.floor(
@@ -44,6 +52,7 @@ function addTodo() {
     title: todoTitle.value,
     worked_for_sec: 0,
     date: new Date(),
+    done: false,
   };
   todos.value = [...todos.value, newTodo];
   localStorage.setItem("todos", JSON.stringify(todos.value));
@@ -128,9 +137,16 @@ const showPauseIcon = computed(() => running.value && !isPaused.value);
       </form>
       <div
         v-for="todo in todos"
+        :key="todo.id"
+        :class="{ 'opacity-50': todo.done }"
         class="w-full py-5 px-3 shadow flex items-start justify-between"
       >
-        <input type="radio" class="scale-150 mt-1" />
+        <input
+          type="checkbox"
+          class="scale-150 mt-1"
+          :checked="todo.done"
+          @change="checkUncheck(todo.id)"
+        />
 
         <play-icon />
         <p class="break-all w-[90%]">
