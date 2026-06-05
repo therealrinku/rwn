@@ -36,6 +36,13 @@ onUnmounted(() => {
   if (unlistenFinished) unlistenFinished();
 });
 
+const activeTimerTask = ref(null);
+
+function startTimerOnTask(todo) {
+  activeTimerTask.value = todo;
+  toggleTimer();
+}
+
 function deleteTodo(id) {
   const filtered = todos.value.filter((tdo) => tdo.id !== id);
   todos.value = filtered;
@@ -83,8 +90,7 @@ async function toggleTimer() {
 
   await invoke("start_timer", {
     initialSeconds: sec,
-    task: "Working on rwn",
-    urlToBlock: "x.com",
+    task: activeTimerTask.value.title,
   });
 
   running.value = true;
@@ -110,12 +116,13 @@ const showPauseIcon = computed(() => running.value && !isPaused.value);
 
 <template>
   <main
+    v-if="!activeTimerTask"
     class="bg-linear-to-r from-[#af4949] to-[#F88379] text-white h-screen w-screen text-sm tracking-wide flex flex-col items-center justify-center"
   >
-    <div class="mx-auto w-[75%] flex items-center gap-7">
-      <button class="font-bold">Tasks</button>
-      <button class="text-gray-200">Analytics</button>
-    </div>
+    <!-- <div class="mx-auto w-[75%] flex items-center gap-7"> -->
+    <!-- <button class="font-bold">Tasks</button> -->
+    <!-- <button class="text-gray-200">Analytics</button> -->
+    <!-- </div> -->
 
     <!-- <div class="flex items-center gap-3 mt-5"> -->
     <!-- <p class="font-bold text-sm">tasks done 3/5</p> -->
@@ -160,7 +167,11 @@ const showPauseIcon = computed(() => running.value && !isPaused.value);
           @change="checkUncheck(todo.id)"
         />
 
-        <button :class="{ 'opacity-50': todo.done }" :disabled="todo.done">
+        <button
+          :class="{ 'opacity-50': todo.done }"
+          :disabled="todo.done"
+          @click="startTimerOnTask(todo)"
+        >
           <play-icon />
         </button>
         <p
@@ -180,21 +191,23 @@ const showPauseIcon = computed(() => running.value && !isPaused.value);
   </main>
 
   <main
-    v-if="false"
-    class="bg-[#af4949] text-white h-screen w-screen text-sm tracking-wide"
+    v-if="activeTimerTask"
+    class="bg-linear-to-r from-[#af4949] to-[#F88379] text-white h-screen w-screen text-sm tracking-wide flex flex-col items-center justify-center"
   >
-    <div
-      class="flex flex-col items-center justify-center w-full h-full font-mono font-bold"
-    >
-      <span class="text-5xl">{{ formattedTime }}</span>
+    <div class="flex flex-col items-center justify-center w-full h-full gap-5">
+      <span class="bg-[#af4949] px-3 py-1 rounded">{{
+        activeTimerTask.title
+      }}</span>
 
-      <button class="cursor-pointer fixed mt-36" @click="toggleTimer">
+      <span class="text-5xl font-mono font-bold">{{ formattedTime }}</span>
+
+      <button class="cursor-pointer fixed mt-48" @click="toggleTimer">
         <Transition v-if="showPauseIcon">
           <pause-icon />
         </Transition>
 
         <Transition v-else>
-          <play-icon />
+          <play-icon width="42px" height="42px" />
         </Transition>
       </button>
     </div>
