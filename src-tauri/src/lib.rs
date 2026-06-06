@@ -77,9 +77,15 @@ async fn start_timer(
 }
 
 #[tauri::command]
-async fn toggle_pause(state: State<'_, TimerState>) -> Result<bool, String> {
+async fn toggle_pause(state: State<'_, TimerState>, app_handle: tauri::AppHandle) -> Result<bool, String> {
     let mut data = state.0.lock().await;
     data.is_paused = !data.is_paused;
+
+    // remove the tray info when it's paused
+    if data.is_paused {
+    let tray = app_handle.tray_by_id("main-tray").unwrap();
+      let _ = tray.set_title(Some(String::new()));
+    }
     
     Ok(data.is_paused)
 }
