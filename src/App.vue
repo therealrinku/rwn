@@ -13,6 +13,7 @@ const isPaused = ref(false);
 const timer = ref(null);
 const todos = ref([]);
 const todoTitle = ref("");
+const activeTimerTask = ref(null);
 
 let unlistenTick;
 let unlistenFinished;
@@ -21,6 +22,29 @@ onMounted(async () => {
   unlistenTick = await listen("timer-tick", (event) => {
     time.value = event.payload;
     running.value = true;
+
+    // stop when time goes to 0
+    if (event.payload === 0) {
+      //stop
+      return;
+    }
+
+    // update the time spent, remaining
+    activeTimerTask.value.worked_for_sec += 1;
+    activeTimerTask.value.remaining_sec -= 1;
+
+    // update the todos, local storage
+    const todoIndex = todos.value.find(
+      (todo) => todo.id === activeTimerTask.value.id,
+    );
+    const updatedTodos = [...todos.value];
+    updatedTodos[todoIndex] = {
+      ...updatedTodos[todoIndex],
+      worked_for_sec: activeTimerTask.value.worked_for_sec,
+      remaining_sec: activeTimerTask.remaining_sec,
+    };
+    todos.value = updatedTodos;
+    localStorage.setItem("todos", JSON.stringify(todos.value));
   });
 
   unlistenFinished = await listen("timer-finished", () => {
@@ -35,8 +59,6 @@ onUnmounted(() => {
   if (unlistenTick) unlistenTick();
   if (unlistenFinished) unlistenFinished();
 });
-
-const activeTimerTask = ref(null);
 
 function startTimerOnTask(todo) {
   activeTimerTask.value = todo;
@@ -67,6 +89,7 @@ function addTodo() {
     ),
     title: todoTitle.value,
     worked_for_sec: 0,
+    remaining_sec: sec,
     date: new Date(),
     done: false,
   };
@@ -89,7 +112,7 @@ async function toggleTimer() {
   }
 
   await invoke("start_timer", {
-    initialSeconds: sec,
+    initialSeconds: activeTimerTask.value.remaining_sec,
     task: activeTimerTask.value.title,
   });
 
