@@ -111,9 +111,14 @@ async function toggleTimer() {
     return;
   }
 
+  // fallback to 'sec' if remaining_sec goes to 0 aka run new session
+  // maybe make it === 0 ???
+  if(activeTimerTask.value.remaining_sec <= 0) {
+    activeTimerTask.value.remaining_sec = sec;
+  }
+
   await invoke("start_timer", {
-    // fallback to 'sec' if remaining_sec goes to 0 aka run new session
-    initialSeconds: activeTimerTask.value.remaining_sec || sec,
+    initialSeconds: activeTimerTask.value.remaining_sec,
     task: activeTimerTask.value.title,
   });
 
