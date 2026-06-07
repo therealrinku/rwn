@@ -112,7 +112,8 @@ async function toggleTimer() {
   }
 
   await invoke("start_timer", {
-    initialSeconds: activeTimerTask.value.remaining_sec,
+    // fallback to 'sec' if remaining_sec goes to 0 aka run new session
+    initialSeconds: activeTimerTask.value.remaining_sec || sec,
     task: activeTimerTask.value.title,
   });
 
