@@ -41,7 +41,7 @@ onMounted(async () => {
     updatedTodos[todoIndex] = {
       ...updatedTodos[todoIndex],
       worked_for_sec: activeTimerTask.value.worked_for_sec,
-      remaining_sec: activeTimerTask.remaining_sec,
+      remaining_sec: activeTimerTask.value.remaining_sec,
     };
     todos.value = updatedTodos;
     localStorage.setItem("todos", JSON.stringify(todos.value));
