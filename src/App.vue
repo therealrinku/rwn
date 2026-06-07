@@ -127,8 +127,8 @@ async function toggleTimer() {
 }
 
 const formattedTime = computed(() => {
-  const mins = Math.floor(time.value / 60);
-  const secs = time.value % 60;
+  const mins = Math.floor(activeTimerTask.value.remaining_sec / 60);
+  const secs = activeTimerTask.value.remaining_sec % 60;
 
   const formattedMins = String(mins).padStart(2, "0");
   const formattedSecs = String(secs).padStart(2, "0");
