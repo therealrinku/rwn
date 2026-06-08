@@ -57,8 +57,6 @@ async fn start_timer(
             }
 
             if data.seconds_remaining == 0 {
-                app_handle.emit("timer-finished", ()).unwrap();
-                tray.set_title(Some(format!("{} · Completed!", data.task_name))).unwrap();
                 break;
             }
 
@@ -74,6 +72,19 @@ async fn start_timer(
     });
 
     Ok(())
+}
+
+#[tauri::command]
+async fn stop_timer(state: State<'_, TimerState>, app_handle: tauri::AppHandle) -> Result<bool, bool> {
+    let mut data = state.0.lock().await;
+    data.is_paused = false;
+    data.seconds_remaining = 0;
+
+    // remove the tray info
+    let tray = app_handle.tray_by_id("main-tray").unwrap();
+    let _ = tray.set_title(Some(String::new()));
+    
+    Ok(true)
 }
 
 #[tauri::command]
@@ -98,7 +109,7 @@ pub fn run() {
             task_name: String::from("Focusing"),
         }))))
         .setup(|_app| Ok(()))
-        .invoke_handler(tauri::generate_handler![start_timer, toggle_pause])
+        .invoke_handler(tauri::generate_handler![start_timer, toggle_pause, stop_timer])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

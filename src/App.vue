@@ -3,6 +3,7 @@ import { ref, computed, onMounted, onUnmounted } from "vue";
 import { invoke } from "@tauri-apps/api/core";
 import PlayIcon from "./components/icons/play-icon.vue";
 import PauseIcon from "./components/icons/pause-icon.vue";
+import StopIcon from "./components/icons/stop-icon.vue";
 import { listen } from "@tauri-apps/api/event";
 
 const sec = 1200;
@@ -34,7 +35,7 @@ onMounted(async () => {
     activeTimerTask.value.remaining_sec -= 1;
 
     // update the todos, local storage
-    const todoIndex = todos.value.find(
+    const todoIndex = todos.value.findIndex(
       (todo) => todo.id === activeTimerTask.value.id,
     );
     const updatedTodos = [...todos.value];
@@ -96,6 +97,24 @@ function addTodo() {
   todos.value = [...todos.value, newTodo];
   localStorage.setItem("todos", JSON.stringify(todos.value));
   todoTitle.value = "";
+}
+
+async function stopTimer() {
+    await invoke("stop_timer");
+    // update remaining_sec in localstorage // TODO: CONSOLIDATE
+    const todoIndex = todos.value.findIndex(
+      (todo) => todo.id === activeTimerTask.value.id,
+    );
+    const updatedTodos = [...todos.value];
+    updatedTodos[todoIndex] = {
+      ...updatedTodos[todoIndex],
+      //reset
+      remaining_sec: sec,
+    };
+    todos.value = updatedTodos;
+    localStorage.setItem("todos", JSON.stringify(todos.value));
+  
+    activeTimerTask.value = null;
 }
 
 async function toggleTimer() {
@@ -230,7 +249,8 @@ const showPauseIcon = computed(() => running.value && !isPaused.value);
 
       <span class="text-5xl font-mono font-bold">{{ formattedTime }}</span>
 
-      <button class="cursor-pointer fixed mt-48" @click="toggleTimer">
+      <div class="flex items-center gap-3">
+      <button class="cursor-pointer" @click="toggleTimer">
         <Transition v-if="showPauseIcon">
           <pause-icon />
         </Transition>
@@ -239,6 +259,11 @@ const showPauseIcon = computed(() => running.value && !isPaused.value);
           <play-icon width="42px" height="42px" />
         </Transition>
       </button>
+
+      <button class="cursor-pointer" @click="stopTimer">
+        <stop-icon />
+      </button>
+      </div>
     </div>
   </main>
 </template>
