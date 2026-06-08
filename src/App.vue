@@ -165,7 +165,7 @@ const showPauseIcon = computed(() => running.value && !isPaused.value);
 <template>
   <main
     v-if="!activeTimerTask"
-    class="bg-linear-to-r from-[#af4949] to-[#F88379] text-white h-screen w-screen text-sm tracking-wide flex flex-col items-center justify-center"
+    class="bg-linear-to-r from-[#af4949] to-[#F88379] text-white h-screen w-screen text-sm tracking-wide flex flex-col items-center pt-20"
   >
     <!-- <div class="mx-auto w-[75%] flex items-center gap-7"> -->
     <!-- <button class="font-bold">Tasks</button> -->
@@ -184,7 +184,6 @@ const showPauseIcon = computed(() => running.value && !isPaused.value);
       class="flex flex-col items-center justify-center bg-[#af4949] rounded w-[75%] mt-5"
     >
       <form
-        v-if="todos.length < 5"
         class="w-full py-5 px-3 shadow flex items-start justify-between"
         @submit.prevent="addTodo"
       >
@@ -228,12 +227,6 @@ const showPauseIcon = computed(() => running.value && !isPaused.value);
         >
           {{ todo.title }}
         </p>
-      </div>
-      <div
-        v-if="todos.length === 0"
-        class="w-full shadow flex flex-col items-center justify-center min-h-48"
-      >
-        <p>No tasks added.</p>
       </div>
     </div>
   </main>
