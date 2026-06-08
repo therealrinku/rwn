@@ -4,6 +4,8 @@ import { invoke } from "@tauri-apps/api/core";
 import PlayIcon from "./components/icons/play-icon.vue";
 import PauseIcon from "./components/icons/pause-icon.vue";
 import StopIcon from "./components/icons/stop-icon.vue";
+import LeftIcon from "./components/icons/chevron-left-icon.vue";
+import RightIcon from "./components/icons/chevron-right-icon.vue";
 import { listen } from "@tauri-apps/api/event";
 
 const sec = 1200;
@@ -167,18 +169,11 @@ const showPauseIcon = computed(() => running.value && !isPaused.value);
     v-if="!activeTimerTask"
     class="bg-linear-to-r from-[#af4949] to-[#F88379] text-white h-screen w-screen text-sm tracking-wide flex flex-col items-center pt-20"
   >
-    <!-- <div class="mx-auto w-[75%] flex items-center gap-7"> -->
-    <!-- <button class="font-bold">Tasks</button> -->
-    <!-- <button class="text-gray-200">Analytics</button> -->
-    <!-- </div> -->
-
-    <!-- <div class="flex items-center gap-3 mt-5"> -->
-    <!-- <p class="font-bold text-sm">tasks done 3/5</p> -->
-    <!-- · -->
-    <!-- <p class="font-bold text-sm">28.50 mins focused</p> -->
-    <!-- · -->
-    <!-- <p class="font-bold text-sm">Add new ⌘ n</p> -->
-    <!-- </div> -->
+    <div class="flex items-center gap-5 mr-auto w-[75%] ml-auto">
+      <button><LeftIcon/></button>
+      <b> Mon 8 June </b>
+      <button><RightIcon/></button>
+    </div>
 
     <div
       class="flex flex-col items-center justify-center bg-[#af4949] rounded w-[75%] mt-5"
