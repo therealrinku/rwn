@@ -199,7 +199,7 @@ export default defineComponent({
 <template>
   <main
     v-if="!activeTimerTask"
-    class="bg-linear-to-r from-[#af4949] to-[#F88379] text-white h-screen w-screen text-sm tracking-wide flex flex-col items-center pt-20"
+    class="bg-linear-to-r from-[#af4949] to-[#F88379] text-white min-h-screen min-w-screen text-sm tracking-wide flex flex-col items-center py-20"
   >
     <div class="flex items-center w-[75%]">
       <button @click="previousDay">
