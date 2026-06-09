@@ -34,6 +34,13 @@ export default defineComponent({
     };
   },
   computed: {
+    todayTodos() {
+      return this.todos.filter((todo) => {
+        const todoDate = new Date(todo.date).setHours(0, 0, 0, 0);
+        const tday = new Date(this.currentDate).setHours(0, 0, 0, 0);
+        return todoDate === tday;
+      });
+    },
     formattedTime(): string {
       if (!this.activeTimerTask) return "00.00";
       const mins = Math.floor(this.activeTimerTask.remaining_sec / 60);
@@ -122,7 +129,7 @@ export default defineComponent({
         title: this.todoTitle,
         worked_for_sec: 0,
         remaining_sec: sec,
-        date: new Date(),
+        date: this.currentDate,
         done: false,
       };
       this.todos = [...this.todos, newTodo];
@@ -225,16 +232,16 @@ export default defineComponent({
           class="outline-none w-[90%]"
           autofocus
           :placeholder="
-            todos.length === 5
+            todayTodos.length === 5
               ? 'You have added 5 tasks for today.'
               : 'Add new task . . .'
           "
-          :disabled="todos.length === 5"
+          :disabled="todayTodos.length === 5"
         />
       </form>
 
       <div
-        v-for="todo in todos"
+        v-for="todo in todayTodos"
         :key="todo.id"
         class="w-full py-5 px-3 shadow flex items-start justify-between relative"
         @dblclick="deleteTodo(todo.id)"
