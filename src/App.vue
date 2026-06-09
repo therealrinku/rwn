@@ -61,7 +61,7 @@ export default defineComponent({
       return this.currentDate.toLocaleDateString("en-GB", {
         weekday: "short",
         day: "numeric",
-        month: "long",
+        month: "short",
       });
     },
   },
@@ -206,7 +206,7 @@ export default defineComponent({
         <LeftIcon />
       </button>
 
-      <b>{{ formattedDate }}</b>
+      <b class="w-24 flex items-center justify-center">{{ formattedDate }}</b>
 
       <button @click="nextDay">
         <RightIcon />
