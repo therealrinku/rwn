@@ -162,6 +162,29 @@ const progress = computed(() => {
 });
 
 const showPauseIcon = computed(() => running.value && !isPaused.value);
+
+const currentDate = ref(new Date());
+
+const formattedDate = computed(() => {
+  return currentDate.value.toLocaleDateString("en-GB", {
+    weekday: "short",
+    day: "numeric",
+    month: "long",
+  });
+});
+
+function previousDay() {
+  const date = new Date(currentDate.value);
+  date.setDate(date.getDate() - 1);
+  currentDate.value = date;
+}
+
+function nextDay() {
+  const date = new Date(currentDate.value);
+  date.setDate(date.getDate() + 1);
+  currentDate.value = date;
+}
+
 </script>
 
 <template>
@@ -169,11 +192,18 @@ const showPauseIcon = computed(() => running.value && !isPaused.value);
     v-if="!activeTimerTask"
     class="bg-linear-to-r from-[#af4949] to-[#F88379] text-white h-screen w-screen text-sm tracking-wide flex flex-col items-center pt-20"
   >
-    <div class="flex items-center gap-5 mr-auto w-[75%] ml-auto">
-      <button><LeftIcon/></button>
-      <b> Mon 8 June </b>
-      <button><RightIcon/></button>
-    </div>
+
+  <div class="flex items-center w-[75%] ">
+  <button @click="previousDay">
+    <LeftIcon />
+  </button>
+
+  <b>{{ formattedDate }}</b>
+
+  <button @click="nextDay">
+    <RightIcon />
+  </button>
+</div>
 
     <div
       class="flex flex-col items-center justify-center bg-[#af4949] rounded w-[75%] mt-5"
