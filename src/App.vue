@@ -22,6 +22,8 @@ let unlistenTick;
 let unlistenFinished;
 
 onMounted(async () => {
+  document.addEventListener('keydown', handleKeyboardShortcuts);
+  
   unlistenTick = await listen("timer-tick", (event) => {
     time.value = event.payload;
     running.value = true;
@@ -61,6 +63,7 @@ onMounted(async () => {
 onUnmounted(() => {
   if (unlistenTick) unlistenTick();
   if (unlistenFinished) unlistenFinished();
+  document.removeEventListener('keydown', handleKeyboardShortcuts);
 });
 
 function startTimerOnTask(todo) {
@@ -183,6 +186,15 @@ function nextDay() {
   const date = new Date(currentDate.value);
   date.setDate(date.getDate() + 1);
   currentDate.value = date;
+}
+
+function handleKeyboardShortcuts(event) {
+  if (event.key === 'ArrowLeft') {
+    previousDay();
+  } else if (event.key === 'ArrowRight') {
+    nextDay();
+  }
+  // more to come
 }
 
 </script>
