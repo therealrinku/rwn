@@ -193,7 +193,8 @@ const showPauseIcon = computed(() => running.value && !isPaused.value);
           type="text"
           class="outline-none w-[90%]"
           autofocus
-          placeholder="Add new task . . ."
+          :placeholder="todos.length === 5 ? 'You have added 5 tasks for today.': 'Add new task . . .'"
+          :disabled="todos.length === 5"
         />
       </form>
       <div
