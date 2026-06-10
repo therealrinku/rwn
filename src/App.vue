@@ -4,7 +4,6 @@ import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import PlayIcon from "./components/icons/play-icon.vue";
 import PauseIcon from "./components/icons/pause-icon.vue";
-import StopIcon from "./components/icons/stop-icon.vue";
 import LeftIcon from "./components/icons/chevron-left-icon.vue";
 import RightIcon from "./components/icons/chevron-right-icon.vue";
 
@@ -150,6 +149,8 @@ export default defineComponent({
       localStorage.setItem("todos", JSON.stringify(this.todos));
 
       this.activeTimerTask = null;
+      this.running = false;
+      this.isPaused = false;
     },
     async toggleTimer() {
       if (this.running && !this.isPaused) {
@@ -190,6 +191,8 @@ export default defineComponent({
         this.previousDay();
       } else if (event.key === "ArrowRight") {
         this.nextDay();
+      } else if(event.key === 'r') {
+        this.stopTimer();
       }
     },
   },
@@ -290,10 +293,6 @@ export default defineComponent({
           <Transition v-else>
             <PlayIcon width="42px" height="42px" />
           </Transition>
-        </button>
-
-        <button class="cursor-pointer" @click="stopTimer">
-          <StopIcon />
         </button>
       </div>
     </div>
