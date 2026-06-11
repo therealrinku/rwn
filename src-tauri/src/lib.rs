@@ -3,34 +3,44 @@ use std::time::Duration;
 use tauri::{Emitter, State};
 use tauri::tray::TrayIconBuilder;
 use tokio::sync::Mutex;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 struct TimerData {
-    seconds_remaining: u32,
+    finish_timestamp: u64,
     is_paused: bool,
-    task_name: String,
+    task_title: String
 }
 
 pub struct TimerState(Arc<Mutex<TimerData>>);
 
 #[tauri::command]
 async fn start_timer(
-    initial_seconds: u32,
-    task: String,
+    finishTimestamp: u64,
+    taskTitle: String,
     state: State<'_, TimerState>,
     app_handle: tauri::AppHandle,
 ) -> Result<(), String> {
     let inner_state = state.0.clone();
+
+    let now = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .map_err(|e| e.to_string())?;
+    let now_sec = now.as_secs() as u64;
+    let mut remaining_seconds = if finishTimestamp / 1000 > now_sec {
+      finishTimestamp / 1000 - now_sec
+    } else {
+      0
+    };
     
     {
         let mut data = inner_state.lock().await;
-        
-        // 1. DUPLICATE LOOP PROTECTION: Prevent spinning up overlapping loops
-        if data.seconds_remaining > 0 && !data.is_paused {
+
+        // prevent multiple loops spawing
+        if remaining_seconds > 0 && !data.is_paused {
             return Ok(());
         }
 
-        data.seconds_remaining = initial_seconds;
-        data.task_name = task;
+        data.task_title = taskTitle;
         data.is_paused = false;
     }
 
@@ -56,18 +66,18 @@ async fn start_timer(
                 continue;
             }
 
-            if data.seconds_remaining == 0 {
+            if remaining_seconds == 0 {
+                app_handle.emit("timer-finished", remaining_seconds);
                 break;
             }
 
-            data.seconds_remaining -= 1;
+            remaining_seconds -= 1;
 
-            let minutes = data.seconds_remaining / 60;
-            let remaining_seconds = data.seconds_remaining % 60;
-            let display_text = format!("{} · {:02}:{:02}", data.task_name, minutes, remaining_seconds);
-
+            let display_time = format!("{:02}:{:02}", remaining_seconds / 60, remaining_seconds % 60);
+            let display_text = format!("{} · {}", data.task_title, display_time);
             tray.set_title(Some(display_text.clone())).unwrap();
-            app_handle.emit("timer-tick", data.seconds_remaining).unwrap();
+
+            app_handle.emit("timer-tick", display_time);
         }
     });
 
@@ -78,7 +88,6 @@ async fn start_timer(
 async fn stop_timer(state: State<'_, TimerState>, app_handle: tauri::AppHandle) -> Result<bool, bool> {
     let mut data = state.0.lock().await;
     data.is_paused = false;
-    data.seconds_remaining = 0;
 
     // remove the tray info
     let tray = app_handle.tray_by_id("main-tray").unwrap();
@@ -104,9 +113,9 @@ async fn toggle_pause(state: State<'_, TimerState>, app_handle: tauri::AppHandle
 pub fn run() {
     tauri::Builder::default()
         .manage(TimerState(Arc::new(Mutex::new(TimerData {
-            seconds_remaining: 0,
+            finish_timestamp: 0,
             is_paused: true,
-            task_name: String::from("Focusing"),
+            task_title: String::from("rwn"),
         }))))
         .setup(|_app| Ok(()))
         .invoke_handler(tauri::generate_handler![start_timer, toggle_pause, stop_timer])

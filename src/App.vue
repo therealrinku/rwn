@@ -14,13 +14,12 @@ export default defineComponent({
   components: {
     PlayIcon,
     PauseIcon,
-    StopIcon,
     LeftIcon,
     RightIcon,
   },
   data() {
     return {
-      time: sec,
+      formattedTime: null,
       running: false,
       isPaused: false,
       timer: null as any,
@@ -40,19 +39,6 @@ export default defineComponent({
         return todoDate === tday;
       });
     },
-    formattedTime(): string {
-      if (!this.activeTimerTask) return "00.00";
-      const mins = Math.floor(this.activeTimerTask.remaining_sec / 60);
-      const secs = this.activeTimerTask.remaining_sec % 60;
-
-      const formattedMins = String(mins).padStart(2, "0");
-      const formattedSecs = String(secs).padStart(2, "0");
-      return `${formattedMins}.${formattedSecs}`;
-    },
-    progress(): number {
-      const elapsed = sec - this.time;
-      return Math.floor((elapsed / sec) * 100);
-    },
     showPauseIcon(): boolean {
       return this.running && !this.isPaused;
     },
@@ -68,32 +54,20 @@ export default defineComponent({
     document.addEventListener("keydown", this.handleKeyboardShortcuts);
 
     this.unlistenTick = await listen("timer-tick", (event: any) => {
-      this.time = event.payload;
       this.running = true;
-      if (event.payload === 0) {
-        return;
-      }
+      this.formattedTime = event.payload;
 
-      this.activeTimerTask.worked_for_sec += 1;
-      this.activeTimerTask.remaining_sec -= 1;
-
-      const todoIndex = this.todos.findIndex(
-        (todo) => todo.id === this.activeTimerTask.id,
-      );
-      const updatedTodos = [...this.todos];
-      updatedTodos[todoIndex] = {
-        ...updatedTodos[todoIndex],
-        worked_for_sec: this.activeTimerTask.worked_for_sec,
-        remaining_sec: this.activeTimerTask.remaining_sec,
-      };
-      this.todos = updatedTodos;
-      localStorage.setItem("todos", JSON.stringify(this.todos));
+      this.activeTimerTask.timeSpent += 1;
+      this.syncTodosAndSave();
     });
+
     this.unlistenFinished = await listen("timer-finished", () => {
       this.running = false;
+      this.activeTimerTask.finishTimestamp = null;
+      this.syncTodosAndSave();
     });
-    const saved = localStorage.getItem("todos");
-    this.todos = saved ? JSON.parse(saved) : [];
+
+    this.fetchTodos();
   },
   unmounted() {
     if (this.unlistenTick) this.unlistenTick();
@@ -101,6 +75,36 @@ export default defineComponent({
     document.removeEventListener("keydown", this.handleKeyboardShortcuts);
   },
   methods: {
+    getFormattedTime(): string {
+      if (!this.activeTimerTask) return "00.00";
+
+      const remainingSeconds = Math.floor(
+        this.activeTimerTask.finishTimestamp / 1000 - Date.now() / 1000,
+      );
+
+      const mins = Math.floor(remainingSeconds / 60);
+      const secs = remainingSeconds % 60;
+
+      const formattedMins = String(mins).padStart(2, "0");
+      const formattedSecs = String(secs).padStart(2, "0");
+      return `${formattedMins}.${formattedSecs}`;
+    },
+    fetchTodos() {
+      const saved = localStorage.getItem("todos");
+      this.todos = saved ? JSON.parse(saved) : [];
+    },
+    syncTodosAndSave() {
+      const todoIndex = this.todos.findIndex(
+        (todo) => todo.id === this.activeTimerTask.id,
+      );
+      const updatedTodos = [...this.todos];
+      updatedTodos[todoIndex] = {
+        ...updatedTodos[todoIndex],
+        timeSpent: this.activeTimerTask.timeSpent,
+      };
+      this.todos = updatedTodos;
+      localStorage.setItem("todos", JSON.stringify(this.todos));
+    },
     startTimerOnTask(todo: any) {
       this.activeTimerTask = todo;
       this.toggleTimer();
@@ -126,8 +130,8 @@ export default defineComponent({
           new Date().getTime() + Math.random() * 200 + Math.random() * 100,
         ),
         title: this.todoTitle,
-        worked_for_sec: 0,
-        remaining_sec: sec,
+        timeSpent: 0,
+        finishTimestamp: null,
         date: this.currentDate,
         done: false,
       };
@@ -136,6 +140,13 @@ export default defineComponent({
       this.todoTitle = "";
     },
     async stopTimer() {
+      if (this.running) {
+        await invoke("toggle_pause");
+        this.running = false;
+        this.isPaused = true;
+        return;
+      }
+
       await invoke("stop_timer");
       const todoIndex = this.todos.findIndex(
         (todo) => todo.id === this.activeTimerTask.id,
@@ -143,7 +154,7 @@ export default defineComponent({
       const updatedTodos = [...this.todos];
       updatedTodos[todoIndex] = {
         ...updatedTodos[todoIndex],
-        remaining_sec: sec,
+        finishTimestamp: null,
       };
       this.todos = updatedTodos;
       localStorage.setItem("todos", JSON.stringify(this.todos));
@@ -153,26 +164,24 @@ export default defineComponent({
       this.isPaused = false;
     },
     async toggleTimer() {
-      if (this.running && !this.isPaused) {
-        await invoke("toggle_pause");
-        this.isPaused = true;
+      if (this.running) {
+        const isPaused = await invoke("toggle_pause");
+        this.isPaused = isPaused;
         return;
       }
 
-      if (this.running && this.isPaused) {
-        await invoke("toggle_pause");
-        this.isPaused = false;
-        return;
-      }
-
-      if (this.activeTimerTask.remaining_sec <= 0) {
-        this.activeTimerTask.remaining_sec = sec;
+      if (!this.activeTimerTask.finishTimestamp) {
+        this.activeTimerTask.finishTimestamp = Date.now() + sec * 1000;
       }
 
       await invoke("start_timer", {
-        initialSeconds: this.activeTimerTask.remaining_sec,
-        task: this.activeTimerTask.title,
+        finishTimestamp: new Date(
+          this.activeTimerTask.finishTimestamp,
+        ).getTime(),
+        taskTitle: this.activeTimerTask.title,
       });
+
+      this.formattedTime = this.getFormattedTime();
       this.running = true;
       this.isPaused = false;
     },
@@ -191,7 +200,7 @@ export default defineComponent({
         this.previousDay();
       } else if (event.key === "ArrowRight") {
         this.nextDay();
-      } else if(event.key === 'r') {
+      } else if (event.key === "r") {
         this.stopTimer();
       }
     },
