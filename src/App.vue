@@ -54,6 +54,8 @@ export default defineComponent({
     document.addEventListener("keydown", this.handleKeyboardShortcuts);
 
     this.unlistenTick = await listen("timer-tick", (event: any) => {
+      if (!this.activeTimerTask) return;
+
       this.running = true;
       this.formattedTime = event.payload;
 
@@ -148,6 +150,11 @@ export default defineComponent({
       }
 
       await invoke("stop_timer");
+
+      if (!this.activeTimerTask) {
+        return;
+      }
+
       const todoIndex = this.todos.findIndex(
         (todo) => todo.id === this.activeTimerTask.id,
       );

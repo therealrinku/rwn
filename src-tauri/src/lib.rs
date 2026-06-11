@@ -8,7 +8,8 @@ use std::time::{SystemTime, UNIX_EPOCH};
 struct TimerData {
     finish_timestamp: u64,
     is_paused: bool,
-    task_title: String
+    task_title: String,
+    timer_id: u64,
 }
 
 pub struct TimerState(Arc<Mutex<TimerData>>);
@@ -31,14 +32,14 @@ async fn start_timer(
     } else {
       0
     };
-    
+
+    let current_loop_id: u64;
+
     {
         let mut data = inner_state.lock().await;
 
-        // prevent multiple loops spawing
-        if remaining_seconds > 0 && !data.is_paused {
-            return Ok(());
-        }
+        data.timer_id += 1;
+        current_loop_id = data.timer_id;
 
         data.task_title = taskTitle;
         data.is_paused = false;
@@ -64,6 +65,10 @@ async fn start_timer(
 
             if data.is_paused {
                 continue;
+            }
+
+            if data.timer_id != current_loop_id {
+                break;
             }
 
             if remaining_seconds == 0 {
@@ -116,6 +121,7 @@ pub fn run() {
             finish_timestamp: 0,
             is_paused: true,
             task_title: String::from("rwn"),
+            timer_id: 0,
         }))))
         .setup(|_app| Ok(()))
         .invoke_handler(tauri::generate_handler![start_timer, toggle_pause, stop_timer])
