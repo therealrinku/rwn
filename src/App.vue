@@ -203,9 +203,15 @@ export default defineComponent({
       this.currentDate = date;
     },
     handleKeyboardShortcuts(event: KeyboardEvent) {
-      if (event.key === "ArrowLeft") {
+      if (
+        event.key === "ArrowLeft" &&
+        document.activeElement.localName !== "input"
+      ) {
         this.previousDay();
-      } else if (event.key === "ArrowRight") {
+      } else if (
+        event.key === "ArrowRight" &&
+        document.activeElement.localName !== "input"
+      ) {
         this.nextDay();
       } else if (event.key === "r") {
         this.stopTimer();
