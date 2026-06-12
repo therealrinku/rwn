@@ -92,7 +92,8 @@ async fn start_timer(
 #[tauri::command]
 async fn stop_timer(state: State<'_, TimerState>, app_handle: tauri::AppHandle) -> Result<bool, bool> {
     let mut data = state.0.lock().await;
-    data.is_paused = false;
+    data.is_paused = true;
+    data.finish_timestamp = 0;
 
     // remove the tray info
     let tray = app_handle.tray_by_id("main-tray").unwrap();

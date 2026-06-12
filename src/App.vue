@@ -141,14 +141,7 @@ export default defineComponent({
       localStorage.setItem("todos", JSON.stringify(this.todos));
       this.todoTitle = "";
     },
-    async stopTimer() {
-      if (this.running) {
-        await invoke("toggle_pause");
-        this.running = false;
-        this.isPaused = true;
-        return;
-      }
-
+    async cancelTimer() {
       await invoke("stop_timer");
 
       if (!this.activeTimerTask) {
@@ -185,7 +178,10 @@ export default defineComponent({
         finishTimestamp: new Date(
           this.activeTimerTask.finishTimestamp,
         ).getTime(),
-        taskTitle: this.activeTimerTask.title,
+        taskTitle:
+          this.activeTimerTask.title.length > 50
+            ? this.activeTimerTask.title.slice(0, 50) + "..."
+            : this.activeTimerTask.title,
       });
 
       this.formattedTime = this.getFormattedTime();
@@ -213,8 +209,6 @@ export default defineComponent({
         document.activeElement.localName !== "input"
       ) {
         this.nextDay();
-      } else if (event.key === "r") {
-        this.stopTimer();
       }
     },
   },
@@ -300,9 +294,14 @@ export default defineComponent({
     class="bg-linear-to-r from-[#af4949] to-[#F88379] text-white h-screen w-screen text-sm tracking-wide flex flex-col items-center justify-center"
   >
     <div class="flex flex-col items-center justify-center w-full h-full gap-5">
-      <span class="bg-[#af4949] px-3 py-1 rounded">
-        {{ activeTimerTask.title }}
-      </span>
+      <div class="flex items-center gap-1">
+        <span class="bg-[#af4949] px-3 py-1 rounded max-w-60 truncate">
+          {{ activeTimerTask.title }}
+        </span>
+        <button @click="cancelTimer" class="bg-[#af4949] px-3 py-1 rounded">
+          x
+        </button>
+      </div>
 
       <span class="text-5xl font-mono font-bold">{{ formattedTime }}</span>
 
