@@ -78,7 +78,7 @@ export default defineComponent({
   },
   methods: {
     getFormattedTime(): string {
-      if (!this.activeTimerTask) return "00.00";
+      if (!this.activeTimerTask) return "00:00";
 
       const remainingSeconds = Math.floor(
         this.activeTimerTask.finishTimestamp / 1000 - Date.now() / 1000,
@@ -89,7 +89,7 @@ export default defineComponent({
 
       const formattedMins = String(mins).padStart(2, "0");
       const formattedSecs = String(secs).padStart(2, "0");
-      return `${formattedMins}.${formattedSecs}`;
+      return `${formattedMins}:${formattedSecs}`;
     },
     fetchTodos() {
       const saved = localStorage.getItem("todos");
@@ -229,7 +229,7 @@ export default defineComponent({
 
       <button @click="nextDay">
         <RightIcon />
-      </button>
+      </button>  
     </div>
 
     <div
