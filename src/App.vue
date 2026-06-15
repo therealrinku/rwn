@@ -32,6 +32,15 @@ export default defineComponent({
     };
   },
   computed: {
+    activeTaskTitle() {
+      if(!this.activeTimerTask) return;
+      
+      if(this.activeTimerTask.title.length > 50) {
+       return  this.activeTimerTask.title.slice(0, 50) + "..." 
+      }
+
+      return  this.activeTimerTask.title
+    },
     todayTodos() {
       return this.todos.filter((todo) => {
         const todoDate = new Date(todo.date).setHours(0, 0, 0, 0);
@@ -178,10 +187,7 @@ export default defineComponent({
         finishTimestamp: new Date(
           this.activeTimerTask.finishTimestamp,
         ).getTime(),
-        taskTitle:
-          this.activeTimerTask.title.length > 50
-            ? this.activeTimerTask.title.slice(0, 50) + "..."
-            : this.activeTimerTask.title,
+        taskTitle: this.activeTaskTitle
       });
 
       this.formattedTime = this.getFormattedTime();
@@ -296,7 +302,7 @@ export default defineComponent({
     <div class="flex flex-col items-center justify-center w-full h-full gap-5">
       <div class="flex items-center gap-1">
         <span class="bg-[#af4949] px-3 py-1 rounded max-w-60 truncate">
-          {{ activeTimerTask.title }}
+          {{ activeTaskTitle }}
         </span>
         <button @click="cancelTimer" class="bg-[#af4949] px-3 py-1 rounded">
           x
