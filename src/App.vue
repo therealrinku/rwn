@@ -6,6 +6,7 @@ import PlayIcon from "./components/icons/play-icon.vue";
 import PauseIcon from "./components/icons/pause-icon.vue";
 import LeftIcon from "./components/icons/chevron-left-icon.vue";
 import RightIcon from "./components/icons/chevron-right-icon.vue";
+import Analytics from "./components/analytics.vue";
 
 const sec = 1200;
 
@@ -16,6 +17,7 @@ export default defineComponent({
     PauseIcon,
     LeftIcon,
     RightIcon,
+    Analytics,
   },
   data() {
     return {
@@ -29,17 +31,18 @@ export default defineComponent({
       currentDate: new Date(),
       unlistenTick: null as any,
       unlistenFinished: null as any,
+      showAnalytics: false,
     };
   },
   computed: {
     activeTaskTitle() {
-      if(!this.activeTimerTask) return;
-      
-      if(this.activeTimerTask.title.length > 50) {
-       return  this.activeTimerTask.title.slice(0, 50) + "..." 
+      if (!this.activeTimerTask) return;
+
+      if (this.activeTimerTask.title.length > 50) {
+        return this.activeTimerTask.title.slice(0, 50) + "...";
       }
 
-      return  this.activeTimerTask.title
+      return this.activeTimerTask.title;
     },
     todayTodos() {
       return this.todos.filter((todo) => {
@@ -187,7 +190,7 @@ export default defineComponent({
         finishTimestamp: new Date(
           this.activeTimerTask.finishTimestamp,
         ).getTime(),
-        taskTitle: this.activeTaskTitle
+        taskTitle: this.activeTaskTitle,
       });
 
       this.formattedTime = this.getFormattedTime();
@@ -235,7 +238,7 @@ export default defineComponent({
 
       <button @click="nextDay">
         <RightIcon />
-      </button>  
+      </button>
     </div>
 
     <div
@@ -324,4 +327,6 @@ export default defineComponent({
       </div>
     </div>
   </main>
+
+  <analytics :todos="todos" />
 </template>
