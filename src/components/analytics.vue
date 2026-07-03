@@ -47,7 +47,7 @@ export default defineComponent({
           total === 0 ? 0 : Math.round((completed / total) * 100);
 
         const totalSeconds = dayTodos.reduce(
-          (sum, t) => sum + (t.timeSpent || 0),
+          (sum, t) => sum + (t.timeSpent),
           0,
         );
 
