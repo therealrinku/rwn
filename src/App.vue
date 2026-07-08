@@ -21,6 +21,7 @@ export default defineComponent({
   },
   data() {
     return {
+      showAnalytics: false,
       formattedTime: null,
       running: false,
       isPaused: false,
@@ -239,6 +240,8 @@ export default defineComponent({
       <button @click="nextDay">
         <RightIcon />
       </button>
+
+      <button @click="showAnalytics = true" class="ml-auto">📈</button>
     </div>
 
     <div
@@ -328,5 +331,22 @@ export default defineComponent({
     </div>
   </main>
 
-  <analytics :todos="todos" />
+  <div v-if="showAnalytics">
+    <div
+      class="fixed top-0 left-0 w-screen h-screen bg-white opacity-20"
+      @click="showAnalytics = false"
+    ></div>
+
+    <div
+      class="fixed right-0 top-0 h-full w-[50%] overflow-auto transition delay-300 duration-300 ease-in-out"
+    >
+      <button
+        class="absolute right-5 top-6 text-white"
+        @click="showAnalytics = false"
+      >
+        X
+      </button>
+      <analytics :todos="todos" />
+    </div>
+  </div>
 </template>
